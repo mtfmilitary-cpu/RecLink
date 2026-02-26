@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>RecLink Dashboard</title>
+<style>
+body { background: #111; color: white; font-family: Arial; }
+table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+th, td { border: 1px solid #555; padding: 8px; text-align: left; }
+th { background: #222; }
+tr:nth-child(even) { background: #1a1a1a; }
+</style>
+</head>
+<body>
+<h1>RecLink Dashboard</h1>
+<div>Total Members: <span id="memberCount">0</span></div>
+
+<table>
+<thead>
+<tr>
+<th>Player ID</th>
+<th>Trained</th>
+<th>Anti-Crasher</th>
+<th>Crasher</th>
+<th>Blacklisted</th>
+<th>Reason</th>
+<th>Level</th>
+<th>Subscribers</th>
+</tr>
+</thead>
+<tbody id="membersTable">
+</tbody>
+</table>
+
+<script>
+async function loadMembers() {
+const res = await fetch('/dashboard');
+if (!res.ok) return;
+const data = await res.json();
+
+document.getElementById("memberCount").innerText = data.MemberCount;
+
+const tbody = document.getElementById("membersTable");
+tbody.innerHTML = "";
+
+data.Members.forEach(member => {
+const row = document.createElement("tr");
+row.innerHTML = `
+<td>${member.PlayerId}</td>
+<td>${member.IsTrained}</td>
+<td>${member.IsAntiCrasher}</td>
+<td>${member.IsCrasher}</td>
+<td>${member.IsBlacklisted}</td>
+<td>${member.BlacklistReason || ""}</td>
+<td>${member.Level}</td>
+<td>${member.SubscriberCount}</td>
+`;
+tbody.appendChild(row);
+});
+}
+
+loadMembers();
+</script>
+</body>
+</html>
